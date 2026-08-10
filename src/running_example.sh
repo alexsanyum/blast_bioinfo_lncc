@@ -39,7 +39,11 @@ for fasta_file in $PATH_TO_DATA/fasta_files/*.fasta; do
     # Get the base name of the fasta file (without path and extension)
     base_name=$(basename "$fasta_file" .fasta)
     # Run BLAST search against the OPG genes database
-    blastn -query "$fasta_file" -db $PATH_TO_RESULTS/OPG_blast_db/OPG_genes_db -out $PATH_TO_RESULTS/blast_results/"$base_name"_blast_results.txt -outfmt 6
+    blastn -query "$fasta_file" -db $PATH_TO_RESULTS/OPG_blast_db/OPG_genes_db \
+                                -out $PATH_TO_RESULTS/blast_results/"$base_name"_blast_results.txt \
+                                -evalue 1e-5 -num_threads 4 -max_target_seqs 5 \
+                                -outfmt 6
+
 done
 
 # After processing, detele the untarred fasta files to save space
