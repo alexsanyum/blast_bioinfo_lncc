@@ -20,9 +20,17 @@ eval "$(conda shell.bash hook)"
 conda activate blast_env
 
 # Create dir for blast dbs
-mkdir -p $PATH_TO_RESULTS/blast_dbs
+mkdir -p $PATH_TO_RESULTS/OPG_blast_db
 
 # Create results for blastn search
 mkdir -p $PATH_TO_RESULTS/blast_results
 
+# Create BLAST database from the OPG_genes.fasta file
+makeblastdb -in $PATH_TO_DATA/OPG_genes.fasta -dbtype nucl -out $PATH_TO_RESULTS/OPG_blast_db/OPG_genes_db 
+
+# untar the fasta files to be searched against the OPG genes database
+tar -xzf $PATH_TO_DATA/fasta_files.tar.gz -C $PATH_TO_DATA
+
+# After processing, detele the untarred fasta files to save space
+rm -rf $PATH_TO_DATA/fasta_files
 
