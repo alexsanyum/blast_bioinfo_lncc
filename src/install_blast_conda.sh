@@ -19,6 +19,12 @@ fi
 # Create a new conda environment for BLAST+, and isntall BLAST+ in it
 conda create -n blast_env -c bioconda blast -y
 
+# Check in environment was created successfully
+if [ $? -ne 0 ]; then
+    echo "Failed to create conda environment 'blast_env'."
+    exit 1
+fi
+
 # Activate the environment to use BLAST+
 eval "$(conda shell.bash hook)"
 conda activate blast_env
