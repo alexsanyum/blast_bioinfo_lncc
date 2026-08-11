@@ -6,8 +6,6 @@ PATH_TO_DATA=$1
 # Path where to store results of makeblastdb and blastn search
 PATH_TO_RESULTS=$2
 
-
-
 # Check blast_env conda environment exists, if not run install_blast_conda.sh to install BLAST+ in a conda environment
 if ! conda info --envs | grep -q "blast_env"; then
     echo "The conda environment 'blast_env' does not exist."
@@ -38,11 +36,12 @@ echo "Number of fasta files to be processed: $num_files"
 for fasta_file in $PATH_TO_DATA/fasta_files/*.fasta; do
     # Get the base name of the fasta file (without path and extension)
     base_name=$(basename "$fasta_file" .fasta)
+
     # Run BLAST search against the OPG genes database
     blastn -query "$fasta_file" -db $PATH_TO_RESULTS/OPG_blast_db/OPG_genes_db \
                                 -out $PATH_TO_RESULTS/blast_results/"$base_name"_blast_results.txt \
                                 -evalue 1e-5 -num_threads 4 -max_target_seqs 5 \
-                                -outfmt 6
+                                -outfmt 6 > logs.log 2>&1
 
 done
 
