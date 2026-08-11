@@ -6,6 +6,12 @@ PATH_TO_DATA=$1
 # Path where to store results of makeblastdb and blastn search
 PATH_TO_RESULTS=$2
 
+# Control if parameters are provided
+if [ -z "$PATH_TO_DATA" ] || [ -z "$PATH_TO_RESULTS" ]; then
+    echo "Usage: $0 <path_to_data> <path_to_results>"
+    exit 1
+fi
+
 # Check blast_env conda environment exists, if not run install_blast_conda.sh to install BLAST+ in a conda environment
 if ! conda info --envs | grep -q "blast_env"; then
     echo "The conda environment 'blast_env' does not exist."
