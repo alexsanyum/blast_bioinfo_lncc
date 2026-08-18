@@ -2,3 +2,4 @@ blast_exercise
 data/fasta_files/
 *.log
 blast_results
+*.pdf

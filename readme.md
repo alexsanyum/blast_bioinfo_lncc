@@ -26,12 +26,14 @@ Antes do BLAST, o alinhamento de sequências era realizado por algoritmos como N
 Para pontuar um alinhamento de duas sequências, o processo baseia-se em uma matriz. Essa matriz atribui pesos para casos de coincidência (match), diferenças (mismatch) e vazios/saltos (gaps) para sequências de DNA, ou matrizes de substituição (como BLOSUM ou PAM) para sequências de aminoácidos (6). Em ambos os casos, a ideia central é pontuar as coincidências e penalizar as diferenças e gaps. A Figura 1 exemplifica uma matriz de alinhamento mostrando o cálculo do score.
 
 ![sequence aligment](./img/local_aligment_matrix.png)
+
 **Figura 1.** Matriz de alinhamento de duas sequências (PNHIGD vs. PTHIKWGD). Cada evento (match, mismatch, gap) possui uma pontuação previamente definida. Com a matriz preenchida, busca-se o caminho com os maiores scores (ressaltado com setas). Figura tomada de (7).
 
 ### 2.2 Algoritmo do BLAST
 Na Figura 2, mostra-se um exemplo do processo de alinhamento de uma sequência de aminoácidos.
 
 ![sequence process](./img/blast_algorithm.png)
+
 **Figura 2.** Processo de alinhamento heurístico do BLAST para sequências de aminoácidos. (1) leitura de query e formação dos k-mers. (2) busca e seleção das palavras vizinhas, com pontuação acima do limiar. (3) extensão do alinhamento a partir do sítio onde os k-mers e seus vizinhos foram encontrados. Figura adaptada de (8).
 
 Na primeira etapa, a sequência query é dividida em subfragmentos de tamanho fixo chamados k-mers ou palavras (words). O tamanho dessa “palavra” é definido pelo parâmetro word size, com valores padrões de 28 e 3 para sequências de DNA e aminoácidos, respectivamente. O BLAST cria uma tabela hash na qual as palavras atuam como chaves, com o objetivo de melhorar o desempenho de consulta das posições e pontuações de cada palavra.
@@ -145,7 +147,9 @@ O processo de criação do banco de dados gera diversos arquivos complementares 
 
 Para criar um banco de dados a partir de um arquivo FASTA, utiliza-se o parâmetro `-dbtype` para definir se as sequências são de nucleotídeos ou de aminoácidos:
 
+~~~bash
 makeblastdb -in <subject.fasta> -dbtype <nucl,prot> -out <output_path/db_name>
+~~~
 
 Uma vez concluído, o programa mostra na saída padrão o tempo de processamento, o número de sequências indexadas e o nome final do banco criado (Figura 3).
 
