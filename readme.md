@@ -228,11 +228,11 @@ Além disso, os resultados do BLAST fornecem uma abordagem inicial de identifica
 O programa retorna métricas sobre o grau de similaridade entre duas sequências e a qualidade do alinhamento. No entanto, o BLAST não atesta homologia (ancestralidade comum) por si só. A similaridade é um métrica calculada pelo algoritmo, enquanto a inferência de homologia depende da interpretação do contexto biológico e evolutivo das sequências que estão sendo comparadas.
 
 
-## Exemplo prático: Padronização de nomenclatura de genes por alinhamento
+## 12. Exemplo prático: Padronização de nomenclatura de genes por alinhamento
 
-Os genomas depositados no NCBI abrangem sequências obtidas ao longo de décadas. Devido à evolução das tecnologias e métodos de análise, a forma como os genes foram anotados muda entre organismos da mesma família. Em muitos casos, o mesmo gene recebe identificadores e nomes totalmente diferentes. Essa divergência dificulta a extração automática de dados e análises comparativas entre grupos taxonômicos.
+Os genomas depositados no NCBI abrangem sequências obtidas ao longo de décadas. Devido à evolução das tecnologias e métodos de análise, a forma como os genes foram anotados muda entre organismos da mesma família. Em muitos casos, o mesmo gene recebe identificadores e nomes totalmente diferentes. Essa divergência dificulta a extração automática de dados e as análises comparativas entre grupos taxonômicos.
 
-Esse era o problema em genomas da família Orthopoxvirus. Em 2021, foi estabelecida uma nomenclatura padronizada chamada Orthopoxvirus Genes (OPG) (10). No entanto, nem todos os genomas disponíveis nos bancos de dados têm essa nomenclatura, tornando necessária a sua padronização. Para isso, utilizou-se o BLAST como ferramenta de reanotação por similaridade.
+Esse era o problema em genomas da família Orthopoxvirus. Em 2021, foi estabelecida uma nomenclatura padronizada chamada Orthopoxvirus Genes (OPG) [10]. No entanto, nem todos os genomas disponíveis nos bancos de dados têm essa nomenclatura, tornando necessária a sua padronização. Para isso, utilizou-se o BLAST como ferramenta de reanotação por similaridade.
 
 Dados de entrada:
 - OPG_genes.fasta: arquivo contendo sequências de referência com a nomenclatura oficial OPG.
@@ -246,11 +246,11 @@ Estratégia:
    - Cobertura >= 90%
    - E-value <= 1e-5
 
-As sequências que atingiram estes critérios de alinhamento foram rotuladas com o OPG correspondente. 
+As sequências que atingiram esses critérios de alinhamento foram rotuladas com o OPG correspondente. 
 
 ## Execução do exemplo 
 
-Na pasta `src` deste repositório, há dois scripts para rodar o exemplo:
+Na pasta `src` deste repositório, há dois scripts para executar o exemplo:
 
 - `install_blast_conda.sh`: Cria o ambiente Conda e instala a versão mais recente do BLAST.
 - `running_example.sh`: Gera o banco de dados BLAST a partir do arquivo `OPG_genes.fasta` e executa a busca do `blastn` para as sequências do conjunto de dados.
@@ -261,6 +261,7 @@ Para reproduzir o exemplo prático, basta executar os seguintes comandos no term
 bash src/install_blast_conda.sh
 bash src/running_example.sh data blast_results
 ~~~
+
 
 ## Referencias
 1.	BLAST® Command Line Applications User Manual. National Center for Biotechnology Information (US); 2008. 
