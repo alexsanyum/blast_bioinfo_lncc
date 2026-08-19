@@ -71,20 +71,19 @@ Na saída padrão (standard output) são exibidos os resultados dos alinhamentos
 
 ### 5.1 Instalação
 
-O pacote ncbi-blast+ pode ser instalado por diferentes vias e costuma já estar disponível como módulo pré-instalado em ambientes de Computação de Alto Desempenho (HPC). Recomenda-se verificar a melhor forma de instalação de acordo com os recursos computacionais disponíveis. Listamos algumas formas de instalação:
-- Através do gerenciador de pacotes do Debian `apt`:
+O pacote ncbi-blast+ pode ser instalado por diferentes vias e costuma já estar disponível como módulo pré-instalado em ambientes de Computação de Alto Desempenho (HPC). Recomenda-se verificar a melhor forma de instalação de acordo com os recursos computacionais disponíveis. A seguir, listamos algumas formas de instalação:
+- Por meio do gerenciador de pacotes do Debian (`apt`):
 ~~~bash
 apt install ncbi-blast+
 ~~~
-- Ambiente Conda, via canal bioconda:
+- Ambiente Conda, via canal `bioconda`:
 ~~~bash
 conda install -c bioconda blast
 ~~~
 - Executáveis pré-compilados via FTP do NCBI (https://ftp.ncbi.nlm.nih.gov/blast/executables/blast+/2.17.0/)
 - Código-fonte: O código-fonte faz parte do toolkit `ncbi-c++-toolkit` hospedado no GitHub.
 
-
-### Uso
+### 5.2 Uso
 Os programas `blastn`, `blastp`, `blastx` e `tblastn` requerem um arquivo FASTA de entrada (query) e um arquivo FASTA alvo (subject) ou o nome do banco de dados.
 
 Execução utilizando dois arquivos FASTA:
@@ -97,15 +96,16 @@ Execução utilizando um arquivo FASTA e um banco de dados:
 blast<n,p,x> -query <fasta_input.fasta> -db <path_to_blast_db>
 ~~~
 
-Por padrão, os programas exibem o resultado diretamente na saída padrão da tela (stdout). O resultado pode ser direcionado para um arquivo usando o operador `>` ou, de preferência, utilizando o parâmetro `-out` para salvar o resultado em um arquivo de texto:
+Por padrão, os programas exibem o resultado diretamente na saída padrão do terminal (stdout). O resultado pode ser direcionado para um arquivo usando o operador `>` ou, de preferência, utilizando o parâmetro `-out` para salvá-lo em um arquivo de texto:
 ~~~bash
 blast<n,p,x> -query <fasta_input.fasta> -db <path_to_blast_db> -out <out_file_name>
 ~~~
-### Formato de saída
-O programa permite exibir e salvar o resultado dos alinhamentos em diferentes formatos de saída através do parâmetro `-outfmt`, que aceita valores de 0 até 18:
+
+### 5.3 Formato de saída
+O programa permite exibir e salvar o resultado dos alinhamentos em diferentes formatos de saída por meio do parâmetro `-outfmt`, que aceita valores de 0 a 18:
 - Formato padrão (`-outfmt 0`): Exibe um resultado visual do alinhamento similar ao layout da interface web do NCBI BLAST. 
-- Formato tabular sem cabeçalho (`-outfmt 6`): Mais utilizado para análises computacionais e pipelines, gera um formato tabular e permite customizar quais colunas serão exibidas. No entanto, não inclui uma linha de cabeçalho com os nomes das colunas.
-- Formato tabular com comentários (`-outfmt 7`): Também mostra um resultado tabular, porém inclui linhas intermediárias de comentários (iniciadas por `#`), contendo metadados do alinhamento. 
+- Formato tabular sem cabeçalho (`-outfmt 6`): O mais utilizado para análises computacionais e pipelines, gera um formato tabular e permite customizar quais colunas serão exibidas. No entanto, não inclui uma linha de cabeçalho com os nomes das colunas.
+- Formato tabular com comentários (`-outfmt 7`): Também mostra um resultado tabular, porém inclui linhas intermediárias de comentários (iniciadas por `#`) contendo metadados do alinhamento. 
 
 De acordo com a documentação oficial (9), quando as colunas não são especificadas no parâmetro, o programa mostra as seguintes colunas nesta ordem:
 
@@ -121,18 +121,20 @@ De acordo com a documentação oficial (9), quando as colunas não são especifi
 | qend     | Posição final do alinhamento na sequência query   |
 | sstart   | Posição inicial do alinhamento na sequência subject|
 | send     | Posição final do alinhamento na sequência subject  |
-| evalue   | Expect value (E-value) (valor estatístico)        |
+| evalue   | Expect value (E-value)        |
 | bitscore | Pontuação de alinhamento normalizada              |
 
 
 Exemplo de execução especificando as colunas:
+~~~bash
 blast<n,p,x> -query <fasta_input.fasta> -db <path_to_blast_db> \
             -out <out_file_name> \
             -outfmt "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore"
+~~~
 
-### Criar banco de dados BLAST com o `makeblastdb`
+### 5.4 Criar banco de dados BLAST com o `makeblastdb`
 
-É possível criar um banco de dados local a partir de um arquivo FASTA próprio utilizando o programa `makeblastdb`. Criar um banco de dados BLAST é recomendado quando se planeja realizar buscas frequentes ou trabalhar com grandes volumes de dados, acelerando o tempo de processamento das consultas.
+É possível criar um banco de dados local a partir de um arquivo FASTA próprio utilizando o programa `makeblastdb`. Criar um banco de dados BLAST é recomendado quando se planeja realizar buscas frequentes ou trabalhar com grandes volumes de dados, pois acelera o tempo de processamento das consultas.
 
 O processo de criação do banco de dados gera diversos arquivos complementares (.ndb, .nhr, .nin, .njs, .not, .nsq, .ntf, .nto, entre outros). Por isso, recomenda-se organizar o banco de dados dentro de um diretório específico.
 
@@ -142,16 +144,43 @@ Para criar um banco de dados a partir de um arquivo FASTA, utiliza-se o parâmet
 makeblastdb -in <subject.fasta> -dbtype <nucl,prot> -out <output_path/db_name>
 ~~~
 
-Uma vez concluído, o programa mostra na saída padrão o tempo de processamento, o número de sequências indexadas e o nome final do banco criado (Figura 3).
+Uma vez concluído, o programa exibe na saída padrão o tempo de processamento, o número de sequências indexadas e o nome do banco criado (Figura 3).
 
 ![makeblastdb output](./img/makeblastdb_output.png)
-**Figura 3.** Exemplo de saída (output) devolvida pelo `makeblastdb`.
+**Figura 3.** Exemplo de saída (stdout) gerada pelo `makeblastdb`.
 
-
-## Monitoramento
+## 6. Monitoramento
 Os programas `blastn`, `blastp`, `blastx` e `tblastn` não exibem mensagens de progresso durante sua execução. Se o processamento ocorrer normalmente e sem erros, o programa não mostra nada no terminal, inclusive até a sua conclusão.
 
 Assim, o monitoramento do progresso deve ser implementado pelo usuário, adicionando aos scripts blocos de controle ou mensagens informativas. Também é recomendado criar etapas de verificação para checar se os arquivos de saída foram gerados e se contêm dados, já que é possível que o resultado seja completamente vazio.
+
+Abaixo está um exemplo de script em bash executando `blastn` com um bucle for. Ao finalizar o processamento de cada arquivo, o script exibe uma mensagem de quantos arquivos FASTA já foram analisados. O blast é executado em apenas uma linha de código; o resto do código servem para monitorar o progresso da execução:
+
+~~~bash
+echo "Running BLAST search for each fasta file against the OPG genes database..."
+num_files=$(ls -1 $PATH_TO_DATA/fasta_files/*.fasta | wc -l)
+
+
+for fasta_file in $PATH_TO_DATA/fasta_files/*.fasta; do
+    # Get the base name of the fasta file (without path and extension)
+    base_name=$(basename "$fasta_file" .fasta)
+
+    # Run BLAST search against the OPG genes database
+    blastn -query "$fasta_file" -db $PATH_TO_RESULTS/OPG_blast_db/OPG_genes_db \
+                                -out $PATH_TO_RESULTS/blast_results/"$base_name"_blast_results.txt \
+                                -evalue 1e-5 -num_threads 4 -max_target_seqs 5 \
+                                -outfmt "6 qseqid sseqid pident length qlen slen qstart qend sstart send evalue bitscore qcovs"
+
+    echo "Analyzed files: ($((++count))/$num_files)"
+done
+~~~
+
+É possível monitorar o uso de memória consumida pelo blast. De acordo com a documentação [1,9], blast pode consumir toda a memória se a sequência de query for muito grande ou se houver muitos hits no banco de dados. O uso da memória pode ser monitorado com programas como `htop`, `btop` ou qualquer software de monitoramento de recursos. A figura 4 exibe o consumo de memória do `blastn` durante a execução do código em `src/running_example.sh`.
+
+![btop blastn](./img/btop_blastn.png)
+
+Figura 4. Captura de tela do `btop` durante a execução de `blastn`. 
+
 
 
 ## Logs e erros
