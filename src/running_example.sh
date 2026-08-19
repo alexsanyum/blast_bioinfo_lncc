@@ -47,7 +47,7 @@ for fasta_file in $PATH_TO_DATA/fasta_files/*.fasta; do
     blastn -query "$fasta_file" -db $PATH_TO_RESULTS/OPG_blast_db/OPG_genes_db \
                                 -out $PATH_TO_RESULTS/blast_results/"$base_name"_blast_results.txt \
                                 -evalue 1e-5 -num_threads 4 -max_target_seqs 5 \
-                                -outfmt 6
+                                -outfmt "6 qseqid sseqid pident length qlen slen qstart qend sstart send evalue bitscore qcovs"
 
 done
 echo "BLAST search completed. Results are stored in $PATH_TO_RESULTS/blast_results/"
