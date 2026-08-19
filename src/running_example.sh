@@ -37,7 +37,7 @@ tar -xzf $PATH_TO_DATA/fasta_files.tar.gz -C $PATH_TO_DATA
 
 echo "Running BLAST search for each fasta file against the OPG genes database..."
 num_files=$(ls -1 $PATH_TO_DATA/fasta_files/*.fasta | wc -l)
-echo "Number of fasta files to be processed: $num_files"
+
 
 for fasta_file in $PATH_TO_DATA/fasta_files/*.fasta; do
     # Get the base name of the fasta file (without path and extension)
@@ -49,7 +49,9 @@ for fasta_file in $PATH_TO_DATA/fasta_files/*.fasta; do
                                 -evalue 1e-5 -num_threads 4 -max_target_seqs 5 \
                                 -outfmt "6 qseqid sseqid pident length qlen slen qstart qend sstart send evalue bitscore qcovs"
 
+    echo "Analyzed files: ($((++count))/$num_files)"
 done
+
 echo "BLAST search completed. Results are stored in $PATH_TO_RESULTS/blast_results/"
 # After processing, detele the untarred fasta files to save space
 rm -rf $PATH_TO_DATA/fasta_files
