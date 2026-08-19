@@ -8,38 +8,38 @@ O Basic Local Alignment Search Tool (BLAST) é a ferramenta mais utilizada para 
 O BLAST está disponível em um servidor web que permite realizar a busca de sequências nos bancos de dados do National Center for Biotechnology Information (NCBI). No entanto, a interface web apresenta limitações em projetos de grande escala, seja porque os bancos de dados disponíveis não são adaptáveis a perguntas específicas de pesquisa (organismos pouco estudados, dados sensíveis ou não públicos etc.) ou devido às restrições de processamento do próprio servidor [4]. Nesses casos, o BLAST pode ser executado localmente por meio do pacote ncbi-blast+. Neste trabalho, abordamos de maneira prática o uso do BLAST local na linha de comando, mostrando o uso básico dos principais programas ( ```blastn```, ```blastp```, ```blastx```, ```makeblastdb```).
 
 ## 2. Algoritmo
-O BLAST baseia a busca de similaridade das sequências usando uma estratégia de seed-and-extend com matrizes de pontuação definidas. Para entender o processo, é importante definir dois tipos de sequência:
-* Sequência query: Nossa sequência-alvo, que é desconhecida e a qual queremos comparar com bancos de dados.
-* Sequência subject: A sequência (ou sequências) na qual realizamos a busca por similaridade. Elas conformam os bancos de dados.
+O BLAST realiza a busca de similaridade das sequências usando uma estratégia de seed-and-extend com matrizes de pontuação definidas. Para entender o processo, é importante definir dois tipos de sequência:
+* Sequência query: Nossa sequência que queremos comparar com bancos de dados.
+* Sequência subject: A sequência (ou sequências) na qual realizamos a busca por similaridade. Elas compõem os bancos de dados.
 
 ### 2.1 Alinhamento de sequências
-Antes do BLAST, o alinhamento de sequências era realizado por algoritmos como Needleman-Wunsch (global) e Smith-Waterman (local). Embora esses métodos garantam um alinhamento ótimo e satisfaçam as demandas iniciais, exigiam um alto custo computacional. Nesse contexto, o BLAST utiliza uma abordagem heurística que busca obter resultados próximos aos desses algoritmos, mas de forma rápida (5).
+Antes do BLAST, o alinhamento de sequências era realizado por algoritmos como Needleman-Wunsch (global) e Smith-Waterman (local). Embora esses métodos garantissem um alinhamento ótimo e satisfizessem as demandas iniciais, exigiam um alto custo computacional. Nesse contexto, o BLAST utiliza uma abordagem heurística que busca obter resultados próximos aos desses algoritmos, mas de forma rápida [5].
 
-Para pontuar um alinhamento de duas sequências, o processo baseia-se em uma matriz. Essa matriz atribui pesos para casos de coincidência (match), diferenças (mismatch) e vazios/saltos (gaps) para sequências de DNA, ou matrizes de substituição (como BLOSUM ou PAM) para sequências de aminoácidos (6). Em ambos os casos, a ideia central é pontuar as coincidências e penalizar as diferenças e gaps. A Figura 1 exemplifica uma matriz de alinhamento mostrando o cálculo do score.
+Para pontuar um alinhamento de duas sequências, o processo baseia-se em uma matriz. Essa matriz atribui pesos para casos de coincidência (match), diferenças (mismatch) e vazios/saltos (gaps) em sequências de DNA, ou utilizada matrizes de substituição (como BLOSUM ou PAM) para sequências de aminoácidos (6). Em ambos os casos, a ideia central é pontuar as coincidências e penalizar as diferenças e gaps. A Figura 1 exemplifica uma matriz de alinhamento mostrando o cálculo da pontuação.
 
 ![sequence aligment](./img/local_aligment_matrix.png)
 
-**Figura 1.** Matriz de alinhamento de duas sequências (PNHIGD vs. PTHIKWGD). Cada evento (match, mismatch, gap) possui uma pontuação previamente definida. Com a matriz preenchida, busca-se o caminho com os maiores scores (ressaltado com setas). Figura tomada de (7).
+**Figura 1.** Matriz de alinhamento de duas sequências (PNHIGD vs. PTHIKWGD). Cada evento (match, mismatch, gap) possui uma pontuação previamente definida. Com a matriz preenchida, busca-se o caminho com as maiores pontuações (ressaltado com setas). Figura adaptada de [7].
 
 ### 2.2 Algoritmo do BLAST
-Na Figura 2, mostra-se um exemplo do processo de alinhamento de uma sequência de aminoácidos.
+Na Figura 2, mostra-se um exemplo do processo de alinhamento de uma sequência de aminoácidos pelo algoritmo do BLAST.
 
 ![sequence process](./img/blast_algorithm.png)
 
-**Figura 2.** Processo de alinhamento heurístico do BLAST para sequências de aminoácidos. (1) leitura de query e formação dos k-mers. (2) busca e seleção das palavras vizinhas, com pontuação acima do limiar. (3) extensão do alinhamento a partir do sítio onde os k-mers e seus vizinhos foram encontrados. Figura adaptada de (8).
+**Figura 2.** Processo de alinhamento heurístico do BLAST para sequências de aminoácidos. (1) Leitura de query e formação dos k-mers. (2) Busca e seleção das palavras vizinhas, com pontuação acima do limiar. (3) Extensão do alinhamento a partir do sítio onde os k-mers e seus vizinhos foram encontrados. Figura adaptada de (8).
 
-Na primeira etapa, a sequência query é dividida em subfragmentos de tamanho fixo chamados k-mers ou palavras (words). O tamanho dessa “palavra” é definido pelo parâmetro word size, com valores padrões de 28 e 3 para sequências de DNA e aminoácidos, respectivamente. O BLAST cria uma tabela hash na qual as palavras atuam como chaves, com o objetivo de melhorar o desempenho de consulta das posições e pontuações de cada palavra.
+Na primeira etapa, a sequência query é dividida em subfragmentos de tamanho fixo chamados k-mers ou palavras (words). O tamanho dessa “palavra” é definido pelo parâmetro word size, com valores padrão de 28 e 3 para sequências de DNA e aminoácidos, respectivamente. O BLAST cria uma tabela hash na qual as palavras atuam como chaves, com o objetivo de melhorar o desempenho na busca pelas posições e pontuações de cada palavra.
 
-Em vez de alinhar a sequência completa logo no início, o algoritmo busca cada palavra contra as sequências do banco de dados (subject). O alinhamento só é processado em sequências que contêm essa palavra ou variações similares, chamadas palavras vizinhas (neighborhood words), para sequências de proteínas (em DNA busca coincidências exatas). A ocorrência de uma dessas palavras no banco de dados é chamada de hit (5).
+Em lugar de de alinhar a sequência completa logo no início, o algoritmo busca cada palavra contra as sequências do banco de dados (subject). O alinhamento só é processado em sequências que contêm essa palavra ou variações similares, chamadas palavras vizinhas (neighborhood words), para sequências de proteínas (em DNA busca coincidências exatas). A ocorrência de uma dessas palavras no banco de dados é chamada de hit [5].
 
-O conceito de palavra vizinha significa que o algoritmo gera um hit não apenas com a palavra exata, mas também com palavras semelhantes para sequências de proteínas. Por exemplo, se uma das palavras for PQG, seus vizinhos podem ser PEG, PMG, PQA, entre outros. Cada um desses vizinhos (incluindo a palavra original) recebe uma pontuação obtida a partir das matrizes de substituição. O BLAST considera como hit as sequências no banco de dados que contêm o k-mer exato (em sequências de DNA) ou qualquer vizinho cuja pontuação supera um limiar pré-estabelecido (em proteínas) (5,6).
+O conceito de palavra vizinha significa que o algoritmo gera um hit não apenas com a palavra exata, mas também com palavras semelhantes para sequências de proteínas. Por exemplo, se uma das palavras for PQG, seus vizinhos podem ser PEG, PMG, PQA, entre outros. Cada um desses vizinhos (incluindo a palavra original) recebe uma pontuação obtida a partir das matrizes de substituição. O BLAST considera como hit as sequências no banco de dados que contêm o k-mer exato (em sequências de DNA) ou qualquer vizinho cuja pontuação supere um limiar preestabelecido (em proteínas) [5,6].
 
-Quando um hit é encontrado no banco de dados, o algoritmo passa para a etapa de extensão (seed extension) expandindo o alinhamento nas duas direções. No início, essa extensão ocorre sem gaps (gap-free extension) e, depois, com gaps (gapped extension). À medida que o alinhamento é estendido, o score é continuamente recalculado, e se a pontuação cair abaixo de um determinado limite, a extensão é interrompida (5,8).
+Quando um hit é encontrado no banco de dados, o algoritmo passa para a etapa de extensão (seed extension), expandindo o alinhamento nas duas direções. No início, essa extensão ocorre sem gaps (gap-free extension) e, depois, com gaps (gapped extension). À medida que o alinhamento é estendido, a pontuação é continuamente recalculada; se ela cair abaixo de um determinado limite, a extensão é interrompida [5,8].
 
 Em resumo, o BLAST não realiza uma busca exaustiva no banco de dados. Ele identifica regiões sementes (iguais ou muito semelhantes a subfragmentos da query) e, somente quando encontra essas coincidências, estende o alinhamento. Dessa forma, o algoritmo reduz o espaço de busca e o tempo de processamento necessário.
 
-### Pacote ncbi-blast+
-Para o uso em linha de comando, o BLAST disponibiliza o pacote de ferramentas ncbi-blast+ que contém diferentes programas de alinhamento a depender dos tipos de sequências comparadas (9):
+### 2.3 Pacote ncbi-blast+
+Para o uso na linha de comando, o BLAST disponibiliza o pacote de ferramentas ncbi-blast+ que contém diferentes programas de alinhamento, a depender dos tipos de sequências comparadas [9]:
 
 | **Programa** | **Tipo de Query** | **Tipo de Subject** |
 |---|---|---|
@@ -48,24 +48,24 @@ Para o uso em linha de comando, o BLAST disponibiliza o pacote de ferramentas nc
 | `blastx` | Nucleotídeo | Proteína |
 | `tblastn` | Proteína | Nucleotídeo |
 
-Os programas `blastx` e `tblastn` envolvem passos adicionais de tradução da sequência de nucleotídeos para proteínas antes de realizar o alinhamento.
+Os programas `blastx` e `tblastn` envolvem passos adicionais de tradução da sequência de nucleotídeos em proteínas antes de realizar o alinhamento.
 
 ## 3. Requisitos computacionais
-De acordo com a documentação oficial do NCBI, o pacote possui as seguintes dependências (1):
+De acordo com a documentação oficial do NCBI, o pacote possui as seguintes dependências [1]:
 - SQLite: a partir do BLAST+ 2.15.0
 - LMDB: a partir do BLAST+ 2.7.1
 - Zstandard: a partir do BLAST+ 2.17.0
 - Bzip2: a partir do BLAST+ 2.17.0
 - Zlib: a partir do BLAST+ 2.17.0
-- Visual Studio 2015 C++ redistributable runtime package: apenas para usuários do Windows 
+- Visual Studio 2015 C++ redistributable runtime package: para Windows 
 
-## Arquivos de entrada e saída
+## 4. Arquivos de entrada e saída
 Arquivos de entrada:
 - Sequência de consulta (query): arquivo FASTA contendo uma ou mais sequências de interesse. 
-- Sequência de consulta (subject) / banco de dados: arquivo no formato FASTA contendo a(s) sequência(s) alvo ou o nome de um banco de dados BLAST no qual a busca será realizada. 
+- Sequência de referência (subject) / banco de dados: arquivo no formato FASTA contendo a(s) sequência(s) alvo ou o nome de um banco de dados BLAST no qual a busca será realizada. 
 
 Saída:
-Na saída padrão (standard output) mostram-se os resultados dos alinhamentos das sequências de query com as de subject, no formato especificado. O formato de saída padrão é o mesmo visualizado no servidor web. Se o parâmetro `-out` é usado, ou a saída padrão é redirecionada com `>`, o resultado será salvo em um arquivo de texto.
+Na saída padrão (standard output) são exibidos os resultados dos alinhamentos das sequências de query com as de subject, no formato especificado. O formato de saída padrão é o mesmo visualizado no servidor web. Se o parâmetro `-out` for usado, ou a saída padrão é redirecionada com `>`, o resultado será salvo em um arquivo de texto.
 
 
 ## Execução
