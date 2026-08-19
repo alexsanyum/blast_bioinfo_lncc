@@ -181,21 +181,19 @@ done
 
 Figura 4. Captura de tela do `btop` durante a execução de `blastn`. 
 
-
-
-## Logs e erros
+## 7. Logs e erros
 Os programas do BLAST têm um certo nível de tolerância em relação à formatação do arquivo FASTA de entrada. Dependendo da alteração no arquivo, o programa pode apenas emitir alertas para sequências problemáticas, continuando com o processamento, ou interromper a execução com um erro.
 
-O formato FASTA padrão consta de uma linha de cabeçalho iniciada pelo caractere `>` seguida por uma ou múltiplas linhas com a sequência. A Figura 4 mostra os avisos e erros na saída padrão (stdout) do `blastn` usando arquivos FASTA com alterações fora do padrão.
+O formato FASTA padrão consiste em uma linha de cabeçalho iniciada pelo caractere `>` seguida por uma ou mais linhas com a sequência. A Figura 4 mostra os avisos e erros na saída padrão (stdout) do `blastn` usando arquivos FASTA com alterações fora do padrão.
 
 ![logs erros](./img/blast_warnings.png)
-**Figura 4.** Warnings e erros no stdout do `blastn` sob diferentes alterações no arquivo query. A coluna da esquerda mostra o arquivo FASTA com diversas variações, e a da direita, o respectivo resultado no terminal: (1) Execução padrão com arquivo FASTA corretamente formatado; (2) cabeçalho sem o caractere `>`; (3) inserção de linhas em branco e comentários (`#`) no meio da sequência; (4) inserção de texto no meio da sequência; e (5) inserção de linha com caracteres especiais. Em todos os casos, exceto no (5), o programa processa as sequências válidas.
+**Figura 5.** Warnings e erros na saída padrão do `blastn` sob diferentes alterações no arquivo query. A coluna da esquerda mostra o arquivo FASTA com diversas variações, e o respectivo resultado no terminal na dereita: (1) Execução padrão com arquivo FASTA corretamente formatado; (2) cabeçalho sem o caractere `>`; (3) inserção de linhas em branco e comentários (`#`) no meio da sequência; (4) inserção de texto no meio da sequência; e (5) inserção de linha com caracteres especiais. Todos os exemplos foram executados com o mesmo comando sem o parâmetro -out
 
-Quando a linha não inicia com `>`, o programa não reconhece o nome da sequência e passa a tratar o próprio texto como parte dela, ignorando caracteres inválidos, atribuindo um nome genérico e gerando um aviso de resíduos inválidos (Figura 4.2). Se a sequência for interrompida por linhas em branco ou iniciadas por `#`, o programa ignora essas linhas e processa a sequência normalmente, sem emitir avisos (Figura 4.3). Ao inserir uma linha de texto no meio da sequência (ex.: "Esta linha quebra a sequência"), esta é interpretada como parte da sequência, sendo analisada enquanto se ignoram os resíduos inválidos (Figura 4.4). O programa só interrompe a execução quando encontra uma linha com caracteres especiais e símbolos. Neste cenário, é exibido um erro de leitura e a execução é abortada (Figura 4.5).
+Quando a linha não inicia com `>`, o programa não reconhece o nome da sequência e passa a tratar o próprio texto como parte dela, ignorando caracteres inválidos, atribuindo um nome genérico e gerando um aviso de resíduos inválidos (Figura 5.2). Se a sequência for interrompida por linhas em branco ou iniciadas por `#`, o programa ignora essas linhas e a processa normalmente, sem emitir avisos (Figura 4.3). Ao inserir uma linha de texto no meio da sequência (ex.: "Esta linha quebra a sequência"), esta linha é interpretada como parte da sequência, sendo analisada enquanto os resíduos inválidos são ignorados (Figura 4.4). O programa só interrompe a execução quando encontra uma linha com caracteres especiais e símbolos especiais. Neste cenário, é exibido um erro de leitura e a execução é abortada (Figura 5.5).
 
-## Automação
+## 8. Automação
 
-O `blast<x,p,n>` tem o parâmetro `-num_threads` que permite definir o número de threads para processamento em paralelo. Para o processamento de múltiplos arquivos de entrada, é possível utilizar laços de repetição (loops).
+Os programas  `blastn`, `blastp`, `blastx`, `tblastn`  possuem o parâmetro `-num_threads`,  que permite definir o número de threads para processamento em paralelo. Para a análise de múltiplos arquivos de entrada, é possível utilizar bucles, ou gerenciadores que permitam a execução de varios arquivos em paralelo. 
 
 Exemplo de execução usando o parâmetro `-num_threads`:
 ~~~bash
@@ -211,24 +209,24 @@ for fasta_file in $PATH_TO_DATA/fasta_files/*.fasta; do
 done
 ~~~
 
-## Interpretação de resultados
-No formato de saída tabular, cada linha do arquivo representa um alinhamento. A partir desse resultado, pode-se obter a localização exata de quais sequências e regiões da subject (sstart, send) alinharam-se com a sequência de consulta query (qstart, qend). Além da localização, têm-se métricas como o percentual de identidade (pident), que é a porcentagem de posições com resíduos idênticos na região que foi alinhada, o comprimento do alinhamento (length), o número de mismatches e a abertura de gaps.
+## 9. Interpretação de resultados
+No formato de saída tabular, cada linha do arquivo representa um alinhamento. A partir desse resultado, pode-se obter a localização exata de quais sequências e regiões da subject (sstart, send) alinharam-se com a sequência de consulta query (qstart, qend). Além da localização, têm-se métricas como o percentual de identidade (pident), o comprimento do alinhamento (length), o número de mismatches e a abertura de gaps. Há também as métricas e-value e bit-score, detalhadas na seguinte seção. 
 
-Com essas informações, junto ao metadado associado ao banco de dados utilizado, é possível inferir dados sobre a sequência query dado o grau de similaridade (e qualidade do alinhamento) com a sequência subject.
+Com essas informações, junto a informação associada às sequência alinhadas , é possível inferir dados sobre a sequência query dado com base no seu de similaridade (e na qualidade do alinhamento) em relação à sequência subject.
+
+## 10. Métricas estatísticas
+O alinhamento do BLAST também mostra o bit-score e o expect value (E-value). O bit-score é a pontuação obtida do alinhamento entre as sequências (derivado das matrizes de substituição ou dos pesos de match/mismatch/gap) de forma normalizada. O processo de normalização permite comparar diretamente a qualidade de alinhamentos resultantes de diferentes buscas e parâmetros (ex.: usando diferentes matrizes de substituição) [9].
+
+O E-value é uma métrica que descreve o número de alinhamentos com a mesma pontuação que se esperaria encontrar no banco de dados por acaso. O cálculo deste valor considera a pontuação do alinhamento (bit-score) e o tamanho do banco de dados pesquisado (9). Essa métrica busca responder à pergunta: “este alinhamento ocorre porque as duas sequências realmente são similares ou por aleatoriedade?”. Quanto menor for o valor (mais próximo de zero), maior é a significância estatística do alinhamento. Esta métrica é amplamente usada como filtro de qualidade do alinhamento, em conjunto com o percentual de identidade e o comprimento.
 
 
-## Métricas estatísticas
-O alinhamento do BLAST também mostra o bit-score e o expect value (E-value). O bit-score é a pontuação obtida do alinhamento entre as sequências (derivado das matrizes de substituição ou pesos de match/mismatch/gap) de forma normalizada. O processo de normalização permite comparar diretamente a qualidade de alinhamentos vindos de diferentes buscas e parâmetros (ex.: usando diferentes matrizes de substituição) (9).
+## 11. Limitações
+O BLAST possui limitações importantes que devem ser consideradas na análise de dados. Por ser um alinhamento local, ele não é o método ideal para alinhar sequências longas (ex. genomas), tarefas para as quais existem algoritmos específicos.
 
-O E-value é uma métrica que descreve o número de alinhamentos com a mesma pontuação que se esperaria encontrar no banco de dados por acaso. O cálculo deste valor considera a pontuação do alinhamento (bit-score) e o tamanho do banco de dados pesquisado (9). Esta métrica tenta responder à pergunta: “este alinhamento ocorre porque as duas sequências realmente são similares ou por aleatoriedade?”. Quanto menor o valor (mais próximo de zero), maior é a significância estatística do alinhamento. Esta métrica é amplamente usada como filtro de qualidade do alinhamento, junto ao percentual de identidade e ao comprimento.
+Além disso, os resultados do BLAST fornecem uma abordagem inicial de identificação, que deve ser acompanhada por outras evidências para inferir funções, anotações, taxonomias, entre outros.
 
+O programa retorna métricas sobre o grau de similaridade entre duas sequências e a qualidade do alinhamento. No entanto, o BLAST não atesta homologia (ancestralidade comum) por si só. A similaridade é um métrica calculada pelo algoritmo, enquanto a inferência de homologia depende da interpretação do contexto biológico e evolutivo das sequências que estão sendo comparadas.
 
-## Limitações
-O BLAST possui limitações importantes que devem ser consideradas na análise de dados. Por ser um alinhamento local, ele não é o método ideal para alinhar sequências grandes (como genomas), tarefas para as quais existem algoritmos específicos.
-
-Também, os resultados do BLAST fornecem uma abordagem inicial de identificação, que deve ser acompanhada por outras evidências para inferir funções, anotações, taxonomias, entre outros.
-
-O programa retorna métricas sobre o quão similares duas sequências são e a qualidade desse alinhamento. No entanto, o BLAST não atesta homologia (ancestralidade comum) por si só. A similaridade é um dado medido pelo algoritmo, enquanto a inferência de homologia depende do contexto biológico e evolutivo das sequências que estão sendo comparadas.
 
 ## Exemplo prático: Padronização de nomenclatura de genes por alinhamento
 
