@@ -39,7 +39,7 @@ Quando um hit é encontrado no banco de dados, o algoritmo passa para a etapa de
 Em resumo, o BLAST não realiza uma busca exaustiva no banco de dados. Ele identifica regiões sementes (iguais ou muito semelhantes a subfragmentos da query) e, somente quando encontra essas coincidências, estende o alinhamento. Dessa forma, o algoritmo reduz o espaço de busca e o tempo de processamento necessário.
 
 ### 2.3 Pacote ncbi-blast+
-Para o uso na linha de comando, o BLAST disponibiliza o pacote de ferramentas ncbi-blast+ que contém diferentes programas de alinhamento, a depender dos tipos de sequências comparadas [9]:
+Para o uso na linha de comando, o BLAST disponibiliza o pacote de ferramentas ncbi-blast+ que contém diferentes programas de alinhamento, a depender dos tipos de sequências comparadas [1]:
 
 | **Programa** | **Tipo de Query** | **Tipo de Subject** |
 |---|---|---|
@@ -175,7 +175,7 @@ for fasta_file in $PATH_TO_DATA/fasta_files/*.fasta; do
 done
 ~~~
 
-É possível monitorar o uso de memória consumida pelo blast. De acordo com a documentação [1,9], blast pode consumir toda a memória se a sequência de query for muito grande ou se houver muitos hits no banco de dados. O uso da memória pode ser monitorado com programas como `htop`, `btop` ou qualquer software de monitoramento de recursos. A figura 4 exibe o consumo de memória do `blastn` durante a execução do código em `src/running_example.sh`.
+É possível monitorar o uso de memória consumida pelo blast. De acordo com a documentação [1], blast pode consumir toda a memória se a sequência de query for muito grande ou se houver muitos hits no banco de dados. O uso da memória pode ser monitorado com programas como `htop`, `btop` ou qualquer software de monitoramento de recursos. A figura 4 exibe o consumo de memória do `blastn` durante a execução do código em `src/running_example.sh`.
 
 ![btop blastn](./img/btop_blastn.png)
 
@@ -215,7 +215,7 @@ No formato de saída tabular, cada linha do arquivo representa um alinhamento. A
 Com essas informações, junto a informação associada às sequência alinhadas , é possível inferir dados sobre a sequência query dado com base no seu de similaridade (e na qualidade do alinhamento) em relação à sequência subject.
 
 ## 10. Métricas estatísticas
-O alinhamento do BLAST também mostra o bit-score e o expect value (E-value). O bit-score é a pontuação obtida do alinhamento entre as sequências (derivado das matrizes de substituição ou dos pesos de match/mismatch/gap) de forma normalizada. O processo de normalização permite comparar diretamente a qualidade de alinhamentos resultantes de diferentes buscas e parâmetros (ex.: usando diferentes matrizes de substituição) [9].
+O alinhamento do BLAST também mostra o bit-score e o expect value (E-value). O bit-score é a pontuação obtida do alinhamento entre as sequências (derivado das matrizes de substituição ou dos pesos de match/mismatch/gap) de forma normalizada. O processo de normalização permite comparar diretamente a qualidade de alinhamentos resultantes de diferentes buscas e parâmetros (ex.: usando diferentes matrizes de substituição) [1].
 
 O E-value é uma métrica que descreve o número de alinhamentos com a mesma pontuação que se esperaria encontrar no banco de dados por acaso. O cálculo deste valor considera a pontuação do alinhamento (bit-score) e o tamanho do banco de dados pesquisado (9). Essa métrica busca responder à pergunta: “este alinhamento ocorre porque as duas sequências realmente são similares ou por aleatoriedade?”. Quanto menor for o valor (mais próximo de zero), maior é a significância estatística do alinhamento. Esta métrica é amplamente usada como filtro de qualidade do alinhamento, em conjunto com o percentual de identidade e o comprimento.
 
@@ -232,7 +232,7 @@ O programa retorna métricas sobre o grau de similaridade entre duas sequências
 
 Os genomas depositados no NCBI abrangem sequências obtidas ao longo de décadas. Devido à evolução das tecnologias e métodos de análise, a forma como os genes foram anotados muda entre organismos da mesma família. Em muitos casos, o mesmo gene recebe identificadores e nomes totalmente diferentes. Essa divergência dificulta a extração automática de dados e as análises comparativas entre grupos taxonômicos.
 
-Esse era o problema em genomas da família Orthopoxvirus. Em 2021, foi estabelecida uma nomenclatura padronizada chamada Orthopoxvirus Genes (OPG) [10]. No entanto, nem todos os genomas disponíveis nos bancos de dados têm essa nomenclatura, tornando necessária a sua padronização. Para isso, utilizou-se o BLAST como ferramenta de reanotação por similaridade.
+Esse era o problema em genomas da família Orthopoxvirus. Em 2021, foi estabelecida uma nomenclatura padronizada chamada Orthopoxvirus Genes (OPG) [9]. No entanto, nem todos os genomas disponíveis nos bancos de dados têm essa nomenclatura, tornando necessária a sua padronização. Para isso, utilizou-se o BLAST como ferramenta de reanotação por similaridade.
 
 Dados de entrada:
 - OPG_genes.fasta: arquivo contendo sequências de referência com a nomenclatura oficial OPG.
@@ -262,8 +262,11 @@ bash src/install_blast_conda.sh
 bash src/running_example.sh data blast_results
 ~~~
 
+## GitHub
 
-## Referencias
+Todos os arquivos deste projeto estão disponíveis no seguinte repositório:()[https://github.com/alexsanyum/blast_bioinfo_lncc]
+
+## Referências
 1.	BLAST® Command Line Applications User Manual. National Center for Biotechnology Information (US); 2008. 
 2.	The NCBI Handbook. 2nd ed. National Center for Biotechnology Information (US); 2013. 
 3.	Weisman CM, Murray AW, Eddy SR. Many, but not all, lineage-specific genes can be explained by homology detection failure. PLOS Biol. 2020 Nov 2;18(11):e3000862. doi:10.1371/journal.pbio.3000862 
@@ -272,7 +275,4 @@ bash src/running_example.sh data blast_results
 6.	Wheeler D, Bhagwat M. BLAST QuickStart. In: Comparative Genomics: Volumes 1 and 2 [Internet]. Humana Press; 2007 [cited 2026 Aug 13]. Available from: https://www.ncbi.nlm.nih.gov/books/NBK1734/ PubMed PMID: 17993672. 
 7.	Xu B, Li C, Zhuang H, Wang J, Wang Q, Zhou X. Efficient Distributed Smith-Waterman Algorithm Based on Apache Spark. In: 2017 IEEE 10th International Conference on Cloud Computing (CLOUD) [Internet]. Honolulu, CA, USA: IEEE; 2017 [cited 2026 Aug 14]. p. 608–15. Available from: http://ieeexplore.ieee.org/document/8030640/ doi:10.1109/CLOUD.2017.83 
 8.	How BLAST Works [Training Material and Manuals] [Internet]. U.S. National Library of Medicine; [cited 2026 Aug 13]. Available from: https://www.nlm.nih.gov/ncbi/workshops/2022-10_Basic-Web-BLAST/how-blast-works.html 
-9.	BLAST® Command Line Applications User Manual. National Center for Biotechnology Information (US); 2008. 
-10.	Senkevich TG, Yutin N, Wolf YI, Koonin EV, Moss B. Ancient Gene Capture and Recent Gene Loss Shape the Evolution of Orthopoxvirus-Host Interaction Genes. mBio. 2021 Jul 13;12(4):10.1128/mbio.01495-21. doi:10.1128/mbio.01495-21 
-
-
+9.	Senkevich TG, Yutin N, Wolf YI, Koonin EV, Moss B. Ancient Gene Capture and Recent Gene Loss Shape the Evolution of Orthopoxvirus-Host Interaction Genes. mBio. 2021 Jul 13;12(4):10.1128/mbio.01495-21. doi:10.1128/mbio.01495-21 
