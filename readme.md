@@ -1,5 +1,8 @@
 # BLAST na linha de comando
 
+Alex Sánchez Yumbo
+Laboratório Nacional de Computação Científica
+
 Neste repositório, apresentamos a ferramenta para BLAST na linha de comando como atividade da disciplina "Introdução à Biologia Computacional e Bioinformática".
 
 ## 1. Contexto Biológico
