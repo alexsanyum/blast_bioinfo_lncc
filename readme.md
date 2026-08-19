@@ -67,10 +67,9 @@ Arquivos de entrada:
 Saída:
 Na saída padrão (standard output) são exibidos os resultados dos alinhamentos das sequências de query com as de subject, no formato especificado. O formato de saída padrão é o mesmo visualizado no servidor web. Se o parâmetro `-out` for usado, ou a saída padrão é redirecionada com `>`, o resultado será salvo em um arquivo de texto.
 
+## 5. Execução
 
-## Execução
-
-### Instalação
+### 5.1 Instalação
 
 O pacote ncbi-blast+ pode ser instalado por diferentes vias e costuma já estar disponível como módulo pré-instalado em ambientes de Computação de Alto Desempenho (HPC). Recomenda-se verificar a melhor forma de instalação de acordo com os recursos computacionais disponíveis. Listamos algumas formas de instalação:
 - Através do gerenciador de pacotes do Debian `apt`:
