@@ -1,19 +1,11 @@
----
-title: "Trabalho de bininfo LNCC BLAST"
-description: "Respositorio para apresentacao do programa BLAST"
-author: "Alex Sanchez Yumbo"
-data: 2026-25-08
----
-
 # BLAST na linha de comando
 
 Neste repositório, apresentamos a ferramenta para BLAST na linha de comando como atividade da disciplina "Introdução à Biologia Computacional e Bioinformática".
 
 ## 1. Contexto Biológico
+O Basic Local Alignment Search Tool (BLAST) é a ferramenta mais utilizada para a busca de similaridade local entre sequências biológicas (1). Ele alinea uma sequência de interesse, seja nucleotídeo, ou proteína, contra bancos de dados de sequências já caracterizadas, permitindo explorar as informações disponíveis para essa sequência (ou parte dela) [1,2]. Esta abordagem inicial possibilita identificar se a sequência já foi descrita e quais informações estão associadas a ela. Por meio das similaridades entre as sequências, é possível inferir funções biológicas, classificação taxonômica e outras propriedades com base na qualidade do alinhamento e no conhecimento prévio das sequências que estão sendo analisadas, fornecendo uma fonte de informação para estudos mais aprofundados [3].
 
-O Basic Local Alignment Search Tool (BLAST) é a ferramenta mais utilizada para a busca de similaridade local entre sequências biológicas (1). Ele alinea uma sequência(s) de interesse, seja DNA, RNA, ou proteína, contra bancos de dados de sequências já caracterizadas, permitindo explorar as informações disponíveis para essa sequência (ou parte dela) (1,2). Esta abordagem inicial possibilita identificar se a sequência já foi descrita em outros organismos e quais informações estão associadas a ela. Por meio das similaridades entre as sequências, é possível inferir funções biológicas, classificação taxonômica e outras propriedades com base no conhecimento previo, fornecendo uma fonte de informação para análises mais aprofundadas (3).
-
-O BLAST está disponível em um servidor web que permite realizar a busca de sequências nos bancos de dados do National Center for Biotechnology Information (NCBI). No entanto, a interface web apresenta limitações em projetos de grande escala, seja porque os bancos de dados disponíveis não são adaptáveis a perguntas específicas de pesquisa (organismos pouco estudados, dados sensíveis ou não públicos, etc.) ou devido às restrições de processamento do próprio servidor (4). Nestes casos, o BLAST pode ser executado localmente por meio do pacote ncbi-blast+. Neste trabalho, abordamos de maneira prática o uso do BLAST local na linha de comando, mostrando o uso básico dos principais programas ( ```blastn```, ```blastp```, ```blastx```, ```makeblastdb```).
+O BLAST está disponível em um servidor web que permite realizar a busca de sequências nos bancos de dados do National Center for Biotechnology Information (NCBI). No entanto, a interface web apresenta limitações em projetos de grande escala, seja porque os bancos de dados disponíveis não são adaptáveis a perguntas específicas de pesquisa (organismos pouco estudados, dados sensíveis ou não públicos etc.) ou devido às restrições de processamento do próprio servidor [4]. Nesses casos, o BLAST pode ser executado localmente por meio do pacote ncbi-blast+. Neste trabalho, abordamos de maneira prática o uso do BLAST local na linha de comando, mostrando o uso básico dos principais programas ( ```blastn```, ```blastp```, ```blastx```, ```makeblastdb```).
 
 ## 2. Algoritmo
 O BLAST baseia a busca de similaridade das sequências usando uma estratégia de seed-and-extend com matrizes de pontuação definidas. Para entender o processo, é importante definir dois tipos de sequência:
